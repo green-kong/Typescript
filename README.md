@@ -1,9 +1,11 @@
 # Type-Script
 
 <details>
-<summary># 0. 설치 및 실행</summary>
+<summary>0. 설치 및 실행</summary>
 <div markdown="1">
 
+# 0. 설치 및 실행  
+  
 ### 0-1. 설치
 
 ```zsh
@@ -62,9 +64,11 @@ tsc -w *.ts
 </details>
 
 <details>
-<summary># 1. Type</summary>
+<summary>1. Type</summary>
 <div markdown="1">
 
+# 1. Type
+  
 ### 1. Basic
 
 typesciript 에서 타입을 변수를 선언할 때는 `:`를 이용해서 타입을 지정해줘야한다.
