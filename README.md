@@ -157,11 +157,120 @@ function returnPromise(index: number): Promise<number> {
 }
 ```
 
+경우에 따라 인자값을 받을때도 있고 받지 않기도하는 함수의 경우에는 `?`를 이용하여 option을 줄 수 있다.
+
+```js
+function printMe(name: string, age?: number) {
+  console.log('name : ', name);
+  if (age) {
+    console.log('age : ', age);
+  }
+}
+
+printMe('dev_kong');
+printMe('dev_kong', '30');
+```
+
+또는 인자값이 들어 오지 않을 경우에 default 로 인자값을 넣어 줄 수도 있다.
+
+```js
+function sayHi(message: string = 'hi') {
+  console.log(message);
+}
+
+sayHi();
+sayHi('안녕!');
+```
+
+함수의 인자값이 몇개가 들어올지 알 수 없는 경우에는 rest parameter 를 이용하면 된다.
+
+```js
+function sumEvery(...number: number[]): number {
+  return numbers.reduce((acc, cur) => acc + cur, 0);
+}
+
+console.log(sumEvery(1, 2, 3, 4, 5));
+```
+
+### 3. array & tuple
+
+`typesciript`에서는 당연하게도 배열에 들어갈 값의 `type` 역시 일일히 지정해줘야한다.
+
+배열의 타입을 지정하는 데는 3가지 방법이 있다.
+
+```js
+const vegetable: string[] = ['cucumber', 'eggplant'];
+
+const veges: Array<string> = ['tomato', 'potato'];
+```
+
+위의 두가지 방식으로 타입을 지정해 줄 수 있다.
+위 둘중에 뭐가 더 좋다! 그런건 없다.
+다만 함수의 인자로 받을 때는 차이점을 보여주기도 한다.
+
+```js
+function printArray(veg: readonly string[]){
+  veg.forEach((v)=>{console.log(v)})
+}
+```
+
+위 코드에서 함수의 인자 타입 지정 전에 readonly라고 쓰여진 부분이있다.
+위의 함수에서 veg라는 인자에 `push`, `pop`, `shift`, `unshift` 등 원본 배열에 손상을 주는 코드는 작성이 불가능하다.
+
+```js
+function printArray(veg: readonly string[]){
+  // veg.push('chili')
+  // 👆 readonly 속성 때문에 컴파일 단계에서 에러 발생
+  veg.forEach((v)=>{console.log(v)})
+}
+```
+
+리액트를 해봐서 알지만 객체의 불변성을 매우 중요한 요소이다.
+readonly를 쓴다면 인자로 사용되는 객체 또는 배열의 불변성을 지키기 위해 readonly를 사용하는 것이 강력하게 추천된다.
+
+하지만, `generic` 형식으로 파라미터의 타입을 지정해주게 되면,
+`readonly` 속성이 사용이 불가능하다.
+
+```js
+// wrong
+function printArray(veg: readonly Array<string>){
+  veg.forEach((v)=>{console.log(v)})
+}
+```
+
+위에서 `array`의 타입을 지정해주는 두가지 방법을 보았고,
+마지막 한가지는 `tuple`을 이용하는 것이다.
+
+```js
+let me: [string, number];
+me = ['dev_kong', 30];
+```
+
+위에서 me의 타입을 지정해주는 방식이 `tuple`을 이용한 방식인데,
+잘 사용되지 않는다고 한다.
+배열 같은 경우 index로 값을 가져와서 사용하는게 대부분인데,
+
+```js
+console.log(me[0]);
+console.log(me[1]);
+```
+
+라고 코드가 작성된 경우 me라는 배열의 0번 index와 1번 index에 어떤 값이 저장되어 있는지 명확하지 않기 때문이다.
+
+array destructuring 을 통해 이러한 문제점을 해결 할 수는 있지만,
+
+```js
+const [name, age] = me;
+```
+
+이 마저도 잘 사용되지 않고, `tuple` 보다는
+추후 기술될 `interface`, `type alias`, `class` 를 사용하는 것이 좋다.
+
 </div>
 </details>
 
 <details>
-<summary># 2. Type</summary>
+<summary>2. Type</summary>
 <div markdown="1">
 
 </div>
