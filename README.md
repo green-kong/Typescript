@@ -4,8 +4,8 @@
 <summary>0. 설치 및 실행</summary>
 <div markdown="1">
 
-# 0. 설치 및 실행  
-  
+# 0. 설치 및 실행
+
 ### 0-1. 설치
 
 ```zsh
@@ -68,7 +68,7 @@ tsc -w *.ts
 <div markdown="1">
 
 # 1. Type
-  
+
 ### 1. Basic
 
 typesciript 에서 타입을 변수를 선언할 때는 `:`를 이용해서 타입을 지정해줘야한다.
@@ -269,6 +269,155 @@ const [name, age] = me;
 
 이 마저도 잘 사용되지 않고, `tuple` 보다는
 추후 기술될 `interface`, `type alias`, `class` 를 사용하는 것이 좋다.
+
+### 4. type alias
+
+타입스크립트에서는 직접 타입을 만들어서 사용할 수도 있다.
+
+```js
+type Text = string;
+
+let name: Text = 'kong';
+name = 10; //error
+```
+
+또한 primitive 뿐만 아니라, objective 역시 가능하다.
+
+```js
+type Person = {
+  name: string,
+  age: number,
+};
+
+const me: Person = {
+  name: 'kong',
+  age: 30,
+};
+
+me.age = 'thirty'; //error
+```
+
+### 5. union
+
+타입을 지정해줄 때에 여러개의 타입을 같이 설정해 줄 수도 있다.
+
+```js
+type SuccessState = {
+  response: {
+    body: string,
+  },
+};
+
+type FailureState = {
+  response: {
+    error: string,
+  },
+};
+
+type LoginState = SuccessState | FailureState;
+
+const login = (): LoginState => {
+  return {
+    response: {
+      body: 'login',
+    },
+  };
+};
+```
+
+이런식으로 성공했을때의 타입과 실패햇을 때의 타입 두개를 묶어서 LoginState라는 하나의 타입에 union 시켜서 사용할 수 있다.
+
+### 6. discriminated union
+
+위의 로그인 결과에 따라 다른 이모티콘을 출력하는 함수를 만든다고 가정을 해보자.
+
+```js
+const checkLogin = (state: LoginState) => {
+  if ('error' in state.response) {
+    console.log(state.response.error);
+  } else {
+    console.log(state.response.body);
+  }
+};
+```
+
+이런식으로 state 안에 특정한 키를 가진 `propoerty`의 유무로 출력을 다르게 해줄 수도 있지만,
+하나의 타입(LoginState)으로 묶어서 사용할 경우,  
+구분(discrmination)을 할 수 있는 property를 설정하는 것이 좋다.
+
+```js
+type SuccessState = {
+  result: 'success',
+  response: {
+    body: string,
+  },
+};
+
+type FailureState = {
+  result: 'failure',
+  response: {
+    error: string,
+  },
+};
+
+type LoingState = SuccessState | FailureState;
+
+const login = (): LoginState => {
+  return {
+    result: 'success',
+    response: {
+      body: '로그인 성공!',
+    },
+  };
+};
+
+const checkLogin = (state: LoingState) => {
+  if (state.result === 'success') {
+    console.log('🎉', state.response.body);
+  } else {
+    console.log('😭', state, response.error);
+  }
+};
+```
+
+위의 코드와 같이 `result`라는 `property` 를 이용해 로그인 결과의 성공과 실패 여부를 구분하는 것이 좋다.
+
+### 7. intersection
+
+`union type` 같은 경우는 `or` 과 비슷한 역할을 한다면,  
+`and`와 비슷한 역할을 하는 type 역시 존재한다.
+그게 `intersection type` 이다.
+
+```js
+type Student = {
+  name: string,
+  age: number,
+};
+
+type Developer = {
+  code: number,
+  role: string,
+};
+
+type Person = Student & Developer;
+
+let intern: Person = {
+  name: 'kong',
+  age: 30,
+  code: 55,
+  role: 'back-end',
+};
+
+function internWork(person: Person) {
+  console.log(person);
+}
+
+internWork(intern);
+```
+
+위에서 지정한 `Person type`은 `Student`와 `Developer`의 속성을 모두 지니고 있어야한다.  
+그렇기 때문에 `intern` 으로 정의된 변수의 내용을 보면,  
+`Student type` 과 `Developer type` 을 모두 지니고 잇는 것을 확인 할 수 있다.
 
 </div>
 </details>
